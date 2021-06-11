@@ -34,56 +34,33 @@
             <li class="nav-item">
                 <a class="nav-link" href="insert-book.html">Add a Book</a>
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="show-book.html">Find a Book<span class="sr-only"></span></a>
+            <li class="nav-item">
+                <a class="nav-link" href="show-book.html">Find a Book</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="update-book.html">Update a Book</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="delete-book.html">Delete a Book</a>
+            <li class="nav-item active">
+                <a class="nav-link" href="delete-book.html">Delete a Book<span class="sr-only"></span></a>
             </li>
         </ul>
     </div>
 </nav>
-<!--<div class="container">-->
-<!--    <h1>Front End Example: Books</h1>-->
-<!--    <div class="jumbotron" id="output">-->
-<!--    </div>-->
-
-<!--    <div class="mb-3 form-group">-->
-<!--        <label for="id">Book ID:</label>-->
-<!--        <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">-->
-<!--    </div>-->
-<!--    <button class="btn-primary btn-lg" id="btnFindBook">Find Book</button>-->
-<!--</div>-->
 <div class="container">
-<!--    <form method="GET"-->
-<!--          action="https://node-express-books.herokuapp.com/api/books/">-->
-    <form>
-        <h2>Please provide your student information</h2>
-        <div class="mb-3 form-group">
-            <label for="id">Book ID:</label>
-            <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
-        </div>
-<!--        <div class="mb-3 form-group">-->
-<!--            <input type="submit" value="Submit">-->
-<!--        </div>-->
-        <div class="mb-3 form-group">
-            <input type="button" id="find-book" value="Search">
-        </div>
+    <h1>Front End Example: Books</h1>
+    <div class="jumbotron" id="output"></div>
 
-        <div class="jumbotron" id="output">
-
-        </div>
-        </form>
+    <div class="mb-3 form-group">
+        <label for="id">Book ID:</label>
+        <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
+    </div>
+<!--    <button class="btn-primary btn-lg" id="delete-book">Find Book</button>-->
+    <div class="mb-3 form-group">
+        <input type="button" id="delete-book" value="Delete">
+    </div>
+    <div class="jumbotron" id="book-info"></div>
 </div>
-</body>
 <script>
-    function FoundBook(data, book){
-        let userID = document.getElementById("book-id").value;
-        return (userID === data[book]["_id"]);
-    }
     function CreateTable(data){
         let table = "";
         table =
@@ -113,7 +90,7 @@
             '</table>\n'
         return table;
     }
-    document.getElementById("find-book").addEventListener("click", (event) =>{
+    document.getElementById("delete-book").addEventListener("click", (event) =>{
         let userID = document.getElementById("id").value;
         let url = "https://node-express-books.herokuapp.com/api/books/" + userID;
         console.log("THE URL IS: " + url);
@@ -124,8 +101,9 @@
                 document.getElementById("output").innerHTML = CreateTable(data);
             }
         };
-        xhttp.open('GET', url, true);
+        xhttp.open('DELETE', url, true);
         xhttp.send();
     });
 </script>
+</body>
 </html>

@@ -40,28 +40,79 @@
             <li class="nav-item active">
                 <a class="nav-link" href="update-book.html">Update a Book<span class="sr-only"></span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="delete-book.html">Delete a Book</a>
+            </li>
         </ul>
     </div>
 </nav>
 <div class="container">
     <h1>Front End Example: Books</h1>
-    <div class="jumbotron" id="output"></div>
+    <div class="jumbotron" id="output">
+
+    </div>
 
     <div class="mb-3 form-group">
-        <label for="book-id">Book ID:</label>
-        <input type="text" name="book-id" id="book-id" class="form-control" placeholder="Book ID">
+        <label for="id">Book ID:</label>
+        <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
     </div>
-    <button class="btn-primary btn-lg" id="btnFindBook">Find Book</button>
+<!--    <button class="btn-primary btn-lg" id="find-book">Find Book</button>-->
+    <div class="mb-3 form-group">
+        <input type="button" id="find-book" value="Search">
+    </div>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Add Student</h1>
+            <div class="container">
+                <form id="book-info">
+                    <h2>Please provide your student information</h2>
+                    <div class="mb-3 form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" name="title" id="title" class="form-control"
+                               placeholder="Title">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="description">Description:</label>
+                        <input type="text" name="description" id="description" class="form-control"
+                               placeholder="Description">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="year">Year:</label>
+                        <input type="number" name="year" id="year" class="form-control"
+                               placeholder="Year">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="author">Author:</label>
+                        <input type="text" name="author" id="author" class="form-control"
+                               placeholder="Author">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="hardCover">Hard Cover:</label>
+                        <input type="radio" id="hardCover" name="hardCover">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" name="price" id="price" class="form-control"
+                               placeholder="Price">
+                    </div>
+                    <div class="mb-3 form-group">
+                        <input type="button" id="update-book" value="Update">
+                    </div>
+                </form>
+            </div>
+    </div>
 
-    <div class="jumbotron" id="book-info"></div>
+<!--        <div class="jumbotron" id="output">-->
+
+<!--        </div>-->
+    </div>
 </div>
 <script>
     function FoundBook(data, book){
         let userID = document.getElementById("book-id").value;
         return (userID === data[book]["_id"]);
-
     }
-    function CreateTable(data, book){
+    function CreateTable(data){
         let table = "";
         table =
             '<table class="table table-bordered table-hover"> \n' +
@@ -78,108 +129,75 @@
             '   <tbody>\n';
         table +=
             '       <tr>\n' +
-            '           <td>' + data[book]["title"]+  '</td>\n' +
-            '           <td>' + data[book]["description"]+  '</td>\n' +
-            '           <td>' + data[book]["year"]+  '</td>\n' +
-            '           <td>' + data[book]["author"]+  '</td>\n' +
-            '           <td>' + data[book]["hardCover"]+  '</td>\n' +
-            '           <td>' + data[book]["price"]+  '</td>\n' +
+            '           <td>' + data["title"]+  '</td>\n' +
+            '           <td>' + data["description"]+  '</td>\n' +
+            '           <td>' + data["year"]+  '</td>\n' +
+            '           <td>' + data["author"]+  '</td>\n' +
+            '           <td>' + data["hardCover"]+  '</td>\n' +
+            '           <td>' + data["price"]+  '</td>\n' +
             '       </tr>\n';
         table +=
             '   </tbody>\n' +
             '</table>\n'
         return table;
     }
-
-    document.getElementById("btnFindBook").addEventListener("click", (event) =>{
-        let url = "https://node-express-books.herokuapp.com/api/books/"
+    document.getElementById("find-book").addEventListener("click", (event) =>{
+        let userID = document.getElementById("id").value;
+        let url = "https://node-express-books.herokuapp.com/api/books/" + userID;
+        console.log("THE URL IS: " + url);
+        // UpdateValues();
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
                 let data = JSON.parse(this.responseText);
-                let notFound = true;
-                for (let book in data) {
-                    if (FoundBook(data, book)) {
-                        document.getElementById("output").innerHTML = CreateTable(data, book);
-                        notFound = false;
-                        document.getElementById("book-info").innerHTML =
-                            '<div class="container">\n' +
-                            '    <h1>Add Student</h1>\n' +
-                            '    <div class="container">\n' +
-                            '        <form method="PATCH"\n' +
-                            '              action="https://node-express-books.herokuapp.com/api/books/:id">\n' +
-                            '            <h2>Please provide your student information</h2>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="title">Title:</label>\n' +
-                            '                <input type="text" name="title" id="title" class="form-control"\n' +
-                            '                       placeholder="Title">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="description">Description:</label>\n' +
-                            '                <input type="text" name="description" id="description" class="form-control"\n' +
-                            '                       placeholder="Description">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="year">Year:</label>\n' +
-                            '                <input type="number" name="year" id="year" class="form-control"\n' +
-                            '                       placeholder="Year">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="author">Author:</label>\n' +
-                            '                <input type="text" name="author" id="author" class="form-control"\n' +
-                            '                       placeholder="Author">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="hardCover">Hard Cover:</label>\n' +
-                            '                <input type="radio" id="hardCover" name="hardCover">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <label for="price">Price:</label>\n' +
-                            '                <input type="number" name="price" id="price" class="form-control"\n' +
-                            '                       placeholder="Price">\n' +
-                            '            </div>\n' +
-                            '            <div class="mb-3 form-group">\n' +
-                            '                <input type="submit" value="Submit">\n' +
-                            '            </div>\n' +
-                            '        </form>\n' +
-                            '    </div>\n' +
-                            '    <div class="container">\n' +
-                            '        <button class="btn btn-lg btn-outline-primary" id="btnAddFriend">Add Friend</button>\n' +
-                            '    </div>\n' +
-                            '    <div class="jumbotron" id="output">\n' +
-                            '\n' +
-                            '    </div>\n' +
-                            '</div>'
-                        document.getElementById("btnAddFriend").addEventListener("click", (event) =>{
-                            let url = "https://node-express-books.herokuapp.com/api/books/:id"
-                            let xhttp = new XMLHttpRequest();
-                            xhttp.onreadystatechange = function (){
-                                if (this.readyState == 4 && this.status == 200){
-                                    document.getElementById("output").innerHTML =
-                                        "<pre>" + this.responseText + "</pre>";
-                                }
-                            };
-                            // foo=bar&lorem=ipsum
-                            let bookData = "title=" + document.getElementById("title").value + "&" +
-                                "description=" + document.getElementById("description").value  + "&" +
-                                "year="  + document.getElementById("year").value  + "&" +
-                                "author="  + document.getElementById("author").value  + "&" +
-                                "hardCover="  + document.getElementById("hardCover").value  + "&" +
-                                "price="  + document.getElementById("price").value  + "&";
-                            xhttp.open('PATCH', url, true);
-                            // Just needed to place this line AFTER opening the object
-                            xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                            xhttp.send(bookData);
-                        });
-                    }
-                }
-                if (notFound) {
-                    document.getElementById("output").innerHTML = "ERROR: INVALID BOOK ID"
-                }
+                document.getElementById("output").innerHTML = CreateTable(data);
+                document.getElementById("hardCover").checked = (data["hardCover"] === true);
             }
         };
         xhttp.open('GET', url, true);
         xhttp.send();
+    });
+    document.getElementById("update-book").addEventListener("click", (event) =>{
+        let userID = document.getElementById("id").value;
+        let url = "https://node-express-books.herokuapp.com/api/books/" + userID;
+        console.log("THE URL IS: " + url);
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function (){
+            if (this.readyState == 4 && this.status == 200){
+                // document.getElementById("output").innerHTML =
+                //     "<pre>" + this.responseText + "</pre>";
+                let data = JSON.parse(this.responseText);
+                document.getElementById("output").innerHTML = CreateTable(data);
+                console.log(JSON.parse(this.responseText));
+            }
+        };
+        // foo=bar&lorem=ipsum
+        let hardCover = "false";
+        if (document.getElementById("hardCover").checked) {
+            hardCover = "true";
+        }
+        let bookData = "";
+        if(document.getElementById("title").value) {
+            bookData += "title=" + document.getElementById("title").value + "&";
+        }
+        if(document.getElementById("description").value) {
+            bookData += "description=" + document.getElementById("description").value + "&";
+        }
+        if(document.getElementById("year").value) {
+            bookData += "year=" + document.getElementById("year").value + "&";
+        }
+        if(document.getElementById("author").value) {
+            bookData += "author=" + document.getElementById("author").value + "&";
+        }
+        bookData += "hardCover="  + hardCover  + "&";
+        if(document.getElementById("price").value) {
+            bookData += "price="  + document.getElementById("price").value  + "&";
+        }
+        xhttp.open('PATCH', url, true);
+        // Just needed to place this line AFTER opening the object
+        xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhttp.send(bookData);
+        document.getElementById("book-info").reset();
     });
 </script>
 </body>
