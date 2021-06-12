@@ -47,7 +47,8 @@
     </div>
 </nav>
 <div class="container">
-    <h1>Front End Example: Books</h1>
+    <h1>Delete a book</h1>
+    <h2>Please enter book ID</h2>
     <div class="jumbotron" id="output"></div>
 
     <div class="mb-3 form-group">
@@ -96,9 +97,17 @@
         console.log("THE URL IS: " + url);
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
-            if (this.readyState == 4 && this.status == 200){
+            if (this.readyState == 4 && this.status == 200 && document.getElementById("id").value){
                 let data = JSON.parse(this.responseText);
                 document.getElementById("output").innerHTML = CreateTable(data);
+            }else{
+                let error;
+                if(!document.getElementById("id").value){
+                    error = "YOU MUST ENTER A BOOK ID"
+                }else {
+                    error = "COULD NOT FIND BOOK ID"
+                }
+                document.getElementById("output").innerHTML = error;
             }
         };
         xhttp.open('DELETE', url, true);
