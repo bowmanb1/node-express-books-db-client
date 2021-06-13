@@ -132,6 +132,9 @@
             xhttp.send();
             document.getElementById("book-info").innerHTML = "Book with ID of " + userID + " has been deleted";
             bookDeleted = true;
+            if(bookDeleted){
+                document.getElementById("delete-book").style.display = "none";
+            }
         });
     });
 </script>
