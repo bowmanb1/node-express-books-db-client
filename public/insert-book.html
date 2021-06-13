@@ -15,10 +15,6 @@
 <body>
 <h1>Books!</h1>
 <nav class="navbar navbar-expand-lg navbar-light">
-    <!--    <div class="parlorTitle" style="width: 25%;">-->
-    <!--        <a class="navbar-brand" href="index.html">The Potato Parlor</a>-->
-    <!--    </div>-->
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -49,96 +45,57 @@
 <div class="container">
     <h1>Add Book</h1>
     <h2>Please enter book information</h2>
-    <div class="container">
-        <form id="book-info">
-            <div class="mb-3 form-group">
-                <label for="title">Title:</label>
-                <input type="text" name="title" id="title" class="form-control" placeholder="Title" required>
-            </div>
-            <div class="mb-3 form-group">
-                <label for="description">Description:</label>
-                <input type="text" name="description" id="description" class="form-control"
-                       placeholder="Description">
-            </div>
-            <div class="mb-3 form-group">
-                <label for="year">Year:</label>
-                <input type="number" name="year" id="year" class="form-control"
-                       placeholder="Year">
-            </div>
-            <div class="mb-3 form-group">
-                <label for="author">Author:</label>
-                <input type="text" name="author" id="author" class="form-control" placeholder="Author" required>
-            </div>
-            <div class="mb-3 form-group">
-                <label for="cover">No Hard Cover:</label>
-                <input type="radio" id="cover" name="hardCover" checked>
-                <label for="hardCover">Hard Cover:</label>
-                <input type="radio" id="hardCover" name="hardCover">
-            </div>
-            <div class="mb-3 form-group">
-                <label for="price">Price:</label>
-                <input type="number" name="price" id="price" class="form-control"
-                       placeholder="Price">
-            </div>
-            <label for="save-book" id="save-label"></label>
-            <input type="button" id="save-book" value="Save">
-        </form>
-    </div>
     <div class="jumbotron" id="output">
-
+        <div class="container">
+            <form id="book-info">
+                <div class="mb-3 form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" class="form-control" placeholder="Title" required>
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" name="description" id="description" class="form-control"
+                           placeholder="Description">
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="year">Year:</label>
+                    <input type="number" name="year" id="year" class="form-control"
+                           placeholder="Year">
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="author">Author:</label>
+                    <input type="text" name="author" id="author" class="form-control" placeholder="Author" required>
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="cover">No Hard Cover:</label>
+                    <input type="radio" id="cover" name="hardCover" checked>
+                    <label for="hardCover">Hard Cover:</label>
+                    <input type="radio" id="hardCover" name="hardCover">
+                </div>
+                <div class="mb-3 form-group">
+                    <label for="price">Price:</label>
+                    <input type="number" name="price" id="price" class="form-control"
+                           placeholder="Price">
+                </div>
+                <label for="save-book" id="save-label"></label>
+                <input type="button" id="save-book" value="Save">
+            </form>
+            <div class="jumbotron" id="error" style="display: none"></div>
+        </div>
     </div>
 </div>
 <script>
-    function CreateTable(data){
-        let table = "";
-        table =
-            '<table class="table table-bordered table-hover"> \n' +
-            '   <thead>\n' +
-            '       <tr>\n' +
-            '           <th scope="col">ID</th> \n'+
-            '           <th scope="col">Title</th> \n'+
-            '           <th scope="col">Description</th> \n'+
-            '           <th scope="col">Year</th> \n'+
-            '           <th scope="col">Author</th> \n'+
-            '           <th scope="col">Hard Cover</th> \n'+
-            '           <th scope="col">Price</th> \n'+
-            '       </tr>\n' +
-            '   </thead>\n' +
-            '   <tbody>\n';
-        let hardCover = "No";
-        if (data["hardCover"]){
-            hardCover = "Yes";
-        }
-        table +=
-            '       <tr>\n' +
-            '           <td>' + data["_id"] + '</td>\n' +
-            '           <td>' + data["title"] + '</td>\n' +
-            '           <td>' + data["description"]+  '</td>\n' +
-            '           <td>' + data["year"]+  '</td>\n' +
-            '           <td>' + data["author"]+  '</td>\n' +
-            '           <td>' + hardCover + '</td>\n' +
-            '           <td>' + data["price"].toFixed(2) +  '</td>\n' +
-            '       </tr>\n';
-        table +=
-            '   </tbody>\n' +
-            '</table>\n'
-        return table;
-    }
     document.getElementById("save-book").addEventListener("click", (event) =>{
+        document.getElementById("error").style.display = 'none';
         let url = "https://node-express-books.herokuapp.com/api/books/"
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                document.getElementById("output").innerHTML =
-                    "<pre>" + this.responseText + "</pre>";
-                    console.log(JSON.parse(this.responseText));
                 document.getElementById("output").innerHTML = "Book Successfully Saved!"
-                console.log("through here");
-                // document.getElementById("book-info").reset();
             }
             else if(this.status == 404 || this.status == 500 || !document.getElementById("title").value || !document.getElementById("author").value){
                 let error = "";
-                console.log("error");
+                document.getElementById("error").style.display = 'block';
                 if(!document.getElementById("title").value && !document.getElementById("author").value) {
                     error = "YOU MUST ENTER A BOOK TITLE AND AUTHOR";
                 }else if(!document.getElementById("title").value){
@@ -146,7 +103,7 @@
                 }else if(!document.getElementById("author").value){
                     error = "YOU MUST ENTER A BOOK AUTHOR";
                 }
-                document.getElementById("output").innerHTML = error;
+                document.getElementById("error").innerHTML = error;
             }
         };
         // foo=bar&lorem=ipsum
