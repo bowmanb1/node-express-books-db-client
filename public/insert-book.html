@@ -70,6 +70,8 @@
                 <input type="text" name="author" id="author" class="form-control" placeholder="Author" required>
             </div>
             <div class="mb-3 form-group">
+                <label for="cover">No Hard Cover:</label>
+                <input type="radio" id="cover" name="hardCover" checked>
                 <label for="hardCover">Hard Cover:</label>
                 <input type="radio" id="hardCover" name="hardCover">
             </div>
@@ -78,17 +80,10 @@
                 <input type="number" name="price" id="price" class="form-control"
                        placeholder="Price">
             </div>
-<!--            <div class="mb-3 form-group">-->
-<!--                <input type="submit" value="Submit">-->
-<!--            </div>-->
-<!--            <button class="btn-primary btn-lg" id="saveBook">Save Book</button>-->
             <label for="save-book" id="save-label"></label>
             <input type="button" id="save-book" value="Save">
         </form>
     </div>
-<!--    <div class="container">-->
-<!--        <button class="btn btn-lg btn-outline-primary" id="btnAddFriend">Add Friend</button>-->
-<!--    </div>-->
     <div class="jumbotron" id="output">
 
     </div>
@@ -100,6 +95,7 @@
             '<table class="table table-bordered table-hover"> \n' +
             '   <thead>\n' +
             '       <tr>\n' +
+            '           <th scope="col">ID</th> \n'+
             '           <th scope="col">Title</th> \n'+
             '           <th scope="col">Description</th> \n'+
             '           <th scope="col">Year</th> \n'+
@@ -109,14 +105,19 @@
             '       </tr>\n' +
             '   </thead>\n' +
             '   <tbody>\n';
+        let hardCover = "No";
+        if (data["hardCover"]){
+            hardCover = "Yes";
+        }
         table +=
             '       <tr>\n' +
-            '           <td>' + data["title"]+  '</td>\n' +
+            '           <td>' + data["_id"] + '</td>\n' +
+            '           <td>' + data["title"] + '</td>\n' +
             '           <td>' + data["description"]+  '</td>\n' +
             '           <td>' + data["year"]+  '</td>\n' +
             '           <td>' + data["author"]+  '</td>\n' +
-            '           <td>' + data["hardCover"]+  '</td>\n' +
-            '           <td>' + data["price"]+  '</td>\n' +
+            '           <td>' + hardCover + '</td>\n' +
+            '           <td>' + data["price"].toFixed(2) +  '</td>\n' +
             '       </tr>\n';
         table +=
             '   </tbody>\n' +
@@ -128,13 +129,16 @@
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
-                // document.getElementById("output").innerHTML =
-                //     "<pre>" + this.responseText + "</pre>";
-                //     console.log(JSON.parse(this.responseText));
+                document.getElementById("output").innerHTML =
+                    "<pre>" + this.responseText + "</pre>";
+                    console.log(JSON.parse(this.responseText));
                 document.getElementById("output").innerHTML = "Book Successfully Saved!"
-                document.getElementById("book-info").reset();
-            }else{
-                let error;
+                console.log("through here");
+                // document.getElementById("book-info").reset();
+            }
+            else if(this.status == 404 || this.status == 500 || !document.getElementById("title").value || !document.getElementById("author").value){
+                let error = "";
+                console.log("error");
                 if(!document.getElementById("title").value && !document.getElementById("author").value) {
                     error = "YOU MUST ENTER A BOOK TITLE AND AUTHOR";
                 }else if(!document.getElementById("title").value){
@@ -146,9 +150,9 @@
             }
         };
         // foo=bar&lorem=ipsum
-        let hardCover = "false";
-        if (document.getElementById("hardCover").checked) {
-            hardCover = "true";
+        let hardCover = "true";
+        if (document.getElementById("cover").checked) {
+            hardCover = "false";
         }
         let bookData = "title=" + document.getElementById("title").value + "&" +
             "description=" + document.getElementById("description").value  + "&" +

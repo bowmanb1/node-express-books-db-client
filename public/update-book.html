@@ -49,25 +49,20 @@
 <div class="container">
     <h1>Update a book</h1>
     <h2>Please enter book ID</h2>
-    <div class="jumbotron" id="output">
-
-    </div>
-
     <div class="mb-3 form-group">
         <label for="id">Book ID:</label>
         <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
     </div>
-<!--    <button class="btn-primary btn-lg" id="find-book">Find Book</button>-->
     <div class="mb-3 form-group">
         <input type="button" id="find-book" value="Search">
     </div>
+    <div class="jumbotron" id="output"></div>
     <div class="jumbotron" style="display: none" id="update">
         <div class="container">
             <h1>Update Book</h1>
             <h2>Please enter book information</h2>
             <div class="container">
                 <form id="book-info">
-                    <h2>Please provide your student information</h2>
                     <div class="mb-3 form-group">
                         <label for="title">Title:</label>
                         <input type="text" name="title" id="title" class="form-control" placeholder="Title">
@@ -85,6 +80,8 @@
                         <input type="text" name="author" id="author" class="form-control" placeholder="Author">
                     </div>
                     <div class="mb-3 form-group">
+                        <label for="cover">No Hard Cover:</label>
+                        <input type="radio" id="cover" name="hardCover">
                         <label for="hardCover">Hard Cover:</label>
                         <input type="radio" id="hardCover" name="hardCover">
                     </div>
@@ -113,6 +110,7 @@
             '   <thead>\n' +
             '       <tr>\n' +
             '           <th scope="col">ID</th> \n'+
+            '           <th scope="col">Title</th> \n'+
             '           <th scope="col">Description</th> \n'+
             '           <th scope="col">Year</th> \n'+
             '           <th scope="col">Author</th> \n'+
@@ -121,14 +119,19 @@
             '       </tr>\n' +
             '   </thead>\n' +
             '   <tbody>\n';
+        let hardCover = "No";
+        if (data["hardCover"]){
+            hardCover = "Yes";
+        }
         table +=
             '       <tr>\n' +
-            '           <td>' + data["title"]+  '</td>\n' +
+            '           <td>' + data["_id"] + '</td>\n' +
+            '           <td>' + data["title"] + '</td>\n' +
             '           <td>' + data["description"]+  '</td>\n' +
             '           <td>' + data["year"]+  '</td>\n' +
             '           <td>' + data["author"]+  '</td>\n' +
-            '           <td>' + data["hardCover"]+  '</td>\n' +
-            '           <td>' + data["price"]+  '</td>\n' +
+            '           <td>' + hardCover + '</td>\n' +
+            '           <td>$' + data["price"].toFixed(2) +  '</td>\n' +
             '       </tr>\n';
         table +=
             '   </tbody>\n' +
@@ -138,16 +141,20 @@
     document.getElementById("find-book").addEventListener("click", (event) =>{
         let userID = document.getElementById("id").value;
         let url = "https://node-express-books.herokuapp.com/api/books/" + userID;
-        console.log("THE URL IS: " + url);
-        // UpdateValues();
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200 && document.getElementById("id").value){
                 let data = JSON.parse(this.responseText);
                 document.getElementById("output").innerHTML = CreateTable(data);
-                document.getElementById("hardCover").checked = (data["hardCover"] === true);
+                if(data["hardCover"] === true){
+                    document.getElementById("hardCover").checked = true;
+                    document.getElementById("cover").checked = false;
+                }else{
+                    document.getElementById("hardCover").checked = false;
+                    document.getElementById("cover").checked = true;
+                }
                 document.getElementById("update").style.display = 'block';
-            }else{
+            }else if (this.status == 404 || this.status == 500 || !document.getElementById("id").value){
                 let error;
                 if(!document.getElementById("id").value){
                     error = "YOU MUST ENTER A BOOK ID"
@@ -155,6 +162,7 @@
                     error = "COULD NOT FIND BOOK ID"
                 }
                 document.getElementById("output").innerHTML = error;
+                document.getElementById("update").style.display = 'none';
             }
         };
         xhttp.open('GET', url, true);
@@ -163,7 +171,6 @@
     document.getElementById("update-book").addEventListener("click", (event) =>{
         let userID = document.getElementById("id").value;
         let url = "https://node-express-books.herokuapp.com/api/books/" + userID;
-        console.log("THE URL IS: " + url);
         let xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function (){
             if (this.readyState == 4 && this.status == 200){
@@ -174,7 +181,6 @@
                 console.log(JSON.parse(this.responseText));
             }
         };
-        // foo=bar&lorem=ipsum
         let hardCover = "false";
         if (document.getElementById("hardCover").checked) {
             hardCover = "true";
@@ -197,11 +203,9 @@
             bookData += "price="  + document.getElementById("price").value  + "&";
         }
         xhttp.open('PATCH', url, true);
-        // Just needed to place this line AFTER opening the object
         xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xhttp.send(bookData);
         document.getElementById("book-info").reset();
-        bookData += "hardCover="  + hardCover  + "&";
     });
 </script>
 </body>
