@@ -15,10 +15,6 @@
 <body>
 <h1>Books!</h1>
 <nav class="navbar navbar-expand-lg navbar-light">
-    <!--    <div class="parlorTitle" style="width: 25%;">-->
-    <!--        <a class="navbar-brand" href="index.html">The Potato Parlor</a>-->
-    <!--    </div>-->
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -49,21 +45,22 @@
 <div class="container">
     <h1>Delete a book</h1>
     <h2>Please enter book ID</h2>
+    <form>
+        <div class="mb-3 form-group">
+            <label for="id">Book ID:</label>
+            <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
+        </div>
 
-    <div class="mb-3 form-group">
-        <label for="id">Book ID:</label>
-        <input type="text" name="id" id="id" class="form-control" placeholder="Book ID">
-    </div>
-
-    <div class="mb-3 form-group">
-        <input type="button" id="find-book" value="Search">
-    </div>
-    <div class="mb-3 form-group">
-    </div>
-    <div class="jumbotron" id="book-info"></div>
-    <div class="mb-3 form-group">
-        <input type="button" id="delete-book" value="Delete" style="display: none">
-    </div>
+        <div class="mb-3 form-group">
+            <input type="button" id="find-book" value="Search">
+        </div>
+        <div class="mb-3 form-group">
+        </div>
+        <div class="jumbotron" id="book-info"></div>
+        <div class="mb-3 form-group">
+            <input type="button" id="delete-book" value="Delete" style="display: none">
+        </div>
+    </form>
 </div>
 <script>
     function CreateTable(data){
